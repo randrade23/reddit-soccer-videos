@@ -1,14 +1,26 @@
 {
   "name": "reddit-soccer-videos",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
+  "version": "1.0.0",
+  "author": "Rui Andrade",
   "homepage": "http://ionicframework.com/",
   "private": true,
   "scripts": {
     "start": "ionic-app-scripts serve",
+    "start:dev": "cross-env ENV='dev' node configure.js && ionic-app-scripts serve",
+    "start:prod": "cross-env ENV='prod' node configure.js && ionic-app-scripts serve",
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
-    "lint": "ionic-app-scripts lint"
+    "build:dev": "cross-env ENV='dev' node configure.js && ionic-app-scripts build",
+    "build:prod": "cross-env ENV='prod' node configure.js && ionic-app-scripts build",
+    "build:prod:ios": "cross-env ENV='prod' node configure.js && ionic cordova build ios --prod",
+    "build:prod:android": "cross-env ENV='prod' node configure.js && ionic cordova build android --prod",
+    "lint": "ionic-app-scripts lint",
+    "ionic:watch:before": "",
+    "ionic:build:before": "",
+    "ios:dev": "cross-env ENV='dev' node configure.js && ionic cordova run ios -l --address=0.0.0.0",
+    "ios:prod": "cross-env ENV='prod' node configure.js && ionic cordova run ios --prod",
+    "android:dev": "cross-env ENV='dev' node configure.js && ionic cordova run android -l",
+    "android:prod": "cross-env ENV='prod' node configure.js && ionic cordova run android --prod"
   },
   "dependencies": {
     "@angular/animations": "5.2.11",
@@ -32,7 +44,8 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.2",
+    "cross-env": "^5.2.0",
     "typescript": "~2.6.2"
   },
-  "description": "An Ionic project"
+  "description": "r/soccer videos in your pocket"
 }
