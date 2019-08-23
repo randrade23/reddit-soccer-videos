@@ -1,5 +1,7 @@
 {
   "name": "reddit-soccer-videos",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }
