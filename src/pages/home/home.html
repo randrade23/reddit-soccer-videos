@@ -23,7 +23,7 @@
           </ion-card-header>
           <ion-card-content>
             <video controls muted="true" playsinline looped preload="auto" class="videoPlayer"
-              [src]="post.video_url"></video>
+              [src]="post.video_url" (play)="pauseAll($event)"></video>
           </ion-card-content>
         </ion-card>
       </ion-col>

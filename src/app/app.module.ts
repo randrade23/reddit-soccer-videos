@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { HttpClientModule } from '@angular/common/http';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { AdMobPro } from '@ionic-native/admob-pro';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -29,7 +30,7 @@ import { PostsProvider } from '../providers/posts/posts';
     StatusBar,
     SplashScreen,
     PostsProvider,
-    SocialSharing,
+    SocialSharing, AdMobPro,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
