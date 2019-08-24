@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { PostsProvider } from '../../providers/posts/posts'
 import { HttpClient } from '@angular/common/http';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @Component({
   selector: 'page-home',
@@ -10,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomePage {
   posts: any;
 
-  constructor(public navCtrl: NavController, public postsProvider: PostsProvider, public http: HttpClient) {
+  constructor(public navCtrl: NavController, public postsProvider: PostsProvider, public http: HttpClient, public socialSharing: SocialSharing) {
     this.getPosts();
   }
 
@@ -43,5 +44,16 @@ export class HomePage {
 
   isStreamWebsite(url) {
     return /streamable|streamja|streamvi|gfycat|gifv/i.test(url);
+  }
+
+  share(post) {
+    this.socialSharing.shareWithOptions({
+      message: post.data.title,
+      url: post.data.url
+    }).then(() => {
+      console.log("Share: " + post);
+    }).catch(e => {
+      console.log(e);
+    });
   }
 }
