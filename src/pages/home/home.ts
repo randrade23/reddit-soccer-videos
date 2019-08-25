@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import { PostsProvider } from '../../providers/posts/posts'
 import { HttpClient } from '@angular/common/http';
 import { SocialSharing } from '@ionic-native/social-sharing';
@@ -13,7 +13,14 @@ import { Platform } from 'ionic-angular';
 export class HomePage {
   posts: any;
 
-  constructor(public navCtrl: NavController, public platform: Platform, public postsProvider: PostsProvider, public http: HttpClient, public socialSharing: SocialSharing, public admob: AdMobPro) {
+  constructor(
+    public navCtrl: NavController, 
+    public platform: Platform, 
+    public postsProvider: PostsProvider, 
+    public http: HttpClient, 
+    public socialSharing: SocialSharing, 
+    public admob: AdMobPro,
+    public loadingCtrl: LoadingController) {
     platform.ready().then(() => {
       var admobid = {
         banner: 'ca-app-pub-9259900466674677/6074875066'
@@ -31,6 +38,11 @@ export class HomePage {
   }
 
   getPosts() {
+    let loading = this.loadingCtrl.create({
+      content: "Loading videos..."
+    });
+    loading.present();
+
     this.postsProvider.getPosts().then((data: any) => {
       console.log(data.data.children);
 
@@ -50,10 +62,14 @@ export class HomePage {
             var source = document.getElementsByTagName("source")[0];
             post["video_url"] = source ? source.getAttribute("src") : undefined;
           }
+          if (post["video_url"]) {
+            post["video_url"] += "#t=0.1";
+          }
         });
       });
 
       console.log(this.posts);
+      loading.dismiss();
     });
   }
 
