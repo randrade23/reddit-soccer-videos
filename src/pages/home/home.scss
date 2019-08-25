@@ -2,6 +2,18 @@ page-home {
 
 }
 
+@font-face {
+    font-family: Liga_NOS;
+    src: url("../assets/fonts/navbar.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+ion-title {
+    font-family: Liga_NOS !important;
+    letter-spacing: 3px;
+}
+
 ion-card-title {
     overflow-x: auto;
     white-space: normal;
