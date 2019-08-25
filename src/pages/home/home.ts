@@ -14,11 +14,11 @@ export class HomePage {
   posts: any;
 
   constructor(
-    public navCtrl: NavController, 
-    public platform: Platform, 
-    public postsProvider: PostsProvider, 
-    public http: HttpClient, 
-    public socialSharing: SocialSharing, 
+    public navCtrl: NavController,
+    public platform: Platform,
+    public postsProvider: PostsProvider,
+    public http: HttpClient,
+    public socialSharing: SocialSharing,
     public admob: AdMobPro,
     public loadingCtrl: LoadingController) {
     platform.ready().then(() => {
@@ -43,38 +43,24 @@ export class HomePage {
     });
     loading.present();
 
-    this.postsProvider.getPosts().then((data: any) => {
-      console.log(data.data.children);
-
+    this.postsProvider.getPosts(undefined).then((data: any) => {
       this.posts = data.data.children.filter(post => post.data.url && this.isStreamWebsite(post.data.url));
-
-      var domParser = new DOMParser();
-      this.posts.forEach(post => {
-        this.http.get("https://cors-anywhere.herokuapp.com/" + post.data.url, { responseType: 'text' }).subscribe((data: string) => {
-          var document = domParser.parseFromString(data, "text/html");
-          var metas = document.getElementsByTagName("meta");
-          Array.from(metas).forEach(m => {
-            if (m.getAttribute("property") == "og:video:url") {
-              post["video_url"] = m.getAttribute("content");
-            }
-          });
-          if (!post["video_url"]) {
-            var source = document.getElementsByTagName("source")[0];
-            post["video_url"] = source ? source.getAttribute("src") : undefined;
-          }
-          if (post["video_url"]) {
-            post["video_url"] += "#t=0.1";
-          }
-        });
-      });
-
-      console.log(this.posts);
+      this.generateVideo(this.posts);
       loading.dismiss();
     });
   }
 
-  isStreamWebsite(url) {
-    return /streamable|streamja|streamvi|gfycat|gifv/i.test(url);
+  doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      let last = this.posts.slice(-1)[0];
+      console.log(last);
+      this.postsProvider.getPosts(last.data.name).then((data: any) => {
+        let tempNewPosts = data.data.children.filter(post => post.data.url && this.isStreamWebsite(post.data.url));
+        this.generateVideo(tempNewPosts);
+        this.posts = this.posts.concat(tempNewPosts);
+        infiniteScroll.complete();
+      });
+    }, 2000);
   }
 
   share(post) {
@@ -88,15 +74,41 @@ export class HomePage {
     });
   }
 
+  generateVideo(postList) {
+    var domParser = new DOMParser();
+    postList.forEach(post => {
+      this.http.get("https://cors-anywhere.herokuapp.com/" + post.data.url, { responseType: 'text' }).subscribe((data: string) => {
+        var document = domParser.parseFromString(data, "text/html");
+        var metas = document.getElementsByTagName("meta");
+        Array.from(metas).forEach(m => {
+          if (m.getAttribute("property") == "og:video:url") {
+            post["video_url"] = m.getAttribute("content");
+          }
+        });
+        if (!post["video_url"]) {
+          var source = document.getElementsByTagName("source")[0];
+          post["video_url"] = source ? source.getAttribute("src") : undefined;
+        }
+        if (post["video_url"]) {
+          post["video_url"] += "#t=0.1";
+        }
+      });
+    });
+  }
+
   pauseAll(elem) {
     var videos = document.querySelectorAll('video');
     elem = elem.target;
-    
+
     for (var i = 0; i < videos.length; i++) {
-        if (videos[i] == elem) continue;
-        if (videos[i].played.length > 0 && !videos[i].paused) {
-            videos[i].pause();
-        }
+      if (videos[i] == elem) continue;
+      if (videos[i].played.length > 0 && !videos[i].paused) {
+        videos[i].pause();
+      }
     }
-}
+  }
+
+  isStreamWebsite(url) {
+    return /streamable|streamja|streamvi|gfycat|gifv/i.test(url);
+  }
 }
